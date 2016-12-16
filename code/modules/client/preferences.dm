@@ -41,23 +41,10 @@ var/list/preferences_datums = list()
 	var/allow_midround_antag = 1
 	var/preferred_map = null
 
-	var/vore_banned_methods = 0
-	var/vore_extra_bans = 65535
-	var/list/vore_ability = list(
-	"1"=2,
-	"2"=0,
-	"4"=0,
-	"8"=0,
-	"16"=0,
-	"32"=0,
-	"64"=1,
-	"128"=0,
-	"256"=2) //BAAAAD way to do this
-	var/character_size="normal"
-	var/be_taur=0
-
-	var/list/p_cock=list("has"=0,"type"="human","color"="900","sheath"="FFF")
-	var/p_vagina=0
+	//Vore
+	var/digestable = 1
+	var/devourable = 1
+	var/list/belly_prefs = list()
 
 	//character preferences
 	var/real_name						//our character's name
@@ -109,10 +96,6 @@ var/list/preferences_datums = list()
 	//var/metadata = ""
 	var/flavor_text = ""
 
-		// Vore prefs
-	var/digestable = 1
-	var/list/belly_prefs = list()
-
 	var/unlock_content = 0
 
 	var/list/ignoring = list()
@@ -138,7 +121,6 @@ var/list/preferences_datums = list()
 		if(load_character())
 			if(load_vore_preferences())
 				return
-			return
 	//we couldn't load character data so just randomize the character appearance + name
 	random_character()		//let's create a random character then - rather than a fat, bald and naked man.
 	real_name = pref_species.random_name(gender,1)
@@ -239,6 +221,7 @@ var/list/preferences_datums = list()
 				dat += "[TextPreview(flavor_text)]...<br>"
 			dat += "<br>"
 
+			dat += "<br>"
 			if(pref_species.use_skintones)
 
 				dat += "<td valign='top' width='21%'>"
@@ -1333,15 +1316,13 @@ var/list/preferences_datums = list()
 				if("save")
 					save_preferences()
 					save_character()
-					save_vore_preferences()
 
 				if("load")
 					load_preferences()
 					load_character()
-					load_vore_preferences()
 
 				if("changeslot")
-					load_vore_preferences(text2num(href_list["num"]))
+
 					if(!load_character(text2num(href_list["num"])))
 						random_character()
 						real_name = random_unique_name(gender)
@@ -1389,6 +1370,7 @@ var/list/preferences_datums = list()
 		B.owner = character
 
 	character.digestable = digestable
+	character.devourable = devourable
 
 	character.gender = gender
 	character.age = age
